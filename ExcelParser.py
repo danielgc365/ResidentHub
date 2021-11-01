@@ -62,6 +62,10 @@ class SBRWorkbook(GMWorkbook):
         except AttributeError:
             print("Error")
 
-#test_sbr = SBRWorkbook(r'C:\Python\ResidentHub\85541969AA_SBR.xlsm')
-#test_sbr.open_sheet()
-#test_sbr.parse()
+test_main = GMWorkbook(r'C:\Users\daniel.gomez\PycharmProjects\ResidentHub\85545780_A_B_20210629.xlsm')
+test_main.get_sheet_list()
+test_main.open_sheet()
+test_main.parse()
+print(test_main.CalPN)
+
+# TODO Run macro with dialog window
