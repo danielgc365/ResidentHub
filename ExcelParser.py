@@ -10,7 +10,8 @@
 
 # Imports
 from openpyxl import Workbook, load_workbook
-
+import os, os.path
+import win32com.client as win32
 
 #############################################################
 # Class GM workbook
@@ -20,6 +21,7 @@ from openpyxl import Workbook, load_workbook
 class GMWorkbook:
     def __init__(self, path):
         self.path = path
+        self.name = self.path[self.path.rfind('\\') + 1:]
         self.wb = load_workbook(self.path, keep_vba=True, read_only=True)
         pass
 
@@ -42,7 +44,22 @@ class GMWorkbook:
             self.SDMType = self.Sheet['C13'].value
         except AttributeError:
             print("No sheet selected")
-        pass
+
+    def run_macro(self, MacroName="CopyDPID_DIDs"):
+        xl = win32.Dispatch('Excel.Application')
+        #xl.Application.visible = False  # change to True if you are desired to make Excel visible
+
+        try:
+            wb = xl.Workbooks.Open(os.path.abspath(self.path))
+            xl.Application.run(self.name + "!Instructions." + MacroName)  # TODO Remove "instructions."
+
+        except Exception as ex:
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+
+        xl.Application.Quit()
+        del xl
 
 
 #############################################################
@@ -62,10 +79,36 @@ class SBRWorkbook(GMWorkbook):
         except AttributeError:
             print("Error")
 
+
+#############################################################
+# Class PRN Tool
+# Inherits from the GM Workbook class
+# it opens the Veoneer PRN conversion tool, sets the
+# correct files, and runs the macros to create the VNR PRN
+# Input: Path to appropriate PRN tool
+#############################################################
+class PRNTool(GMWorkbook):
+    def __init__(self, path, MainWbPath, SBRWbPath):
+        super().__init__(path)
+        self.MainWbPath = MainWbPath
+        self.SBRWbPath = SBRWbPath
+
+
 test_main = GMWorkbook(r'C:\Users\daniel.gomez\PycharmProjects\ResidentHub\85545780_A_B_20210629.xlsm')
-test_main.get_sheet_list()
-test_main.open_sheet()
-test_main.parse()
-print(test_main.CalPN)
+test_SBR = SBRWorkbook(r'C:\Users\daniel.gomez\PycharmProjects\ResidentHub\85545781_A_A_20210601.xlsm')
+# test_main.open_sheet()
+# test_main.parse()
+# test_main.run_macro()
+
+
+test_prn_tool = PRNTool(r'C:\Users\daniel.gomez\PycharmProjects\ResidentHub\GM PRN '
+                        r'Tool\SDM50_GM_PRN_Conversion_Tool_23.10.159_V1.xlsm', test_main.path, test_SBR.path)
+test_prn_tool.open_sheet("Instructions")
+test_prn_tool.Sheet.CommandButton1_Click
+
+
+# test_prn_tool.run_macro("ClearVars_Click")
 
 # TODO Run macro with dialog window
+# TODO Make self.name the path without the initial stuff
+# TODO Do entire run of excel stuff
