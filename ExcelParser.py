@@ -96,19 +96,10 @@ class PRNTool(GMWorkbook):
 
 test_main = GMWorkbook(r'C:\Users\daniel.gomez\PycharmProjects\ResidentHub\85545780_A_B_20210629.xlsm')
 test_SBR = SBRWorkbook(r'C:\Users\daniel.gomez\PycharmProjects\ResidentHub\85545781_A_A_20210601.xlsm')
-# test_main.open_sheet()
-# test_main.parse()
-# test_main.run_macro()
-
-
 test_prn_tool = PRNTool(r'C:\Users\daniel.gomez\PycharmProjects\ResidentHub\GM PRN '
                         r'Tool\SDM50_GM_PRN_Conversion_Tool_23.10.159_V1.xlsm', test_main.path, test_SBR.path)
-test_prn_tool.open_sheet("Instructions")
-test_prn_tool.Sheet.CommandButton1_Click
 
-
-# test_prn_tool.run_macro("ClearVars_Click")
-
+# TODO Run macro on all three files
 # TODO Run macro with dialog window
 # TODO Make self.name the path without the initial stuff
 # TODO Do entire run of excel stuff
